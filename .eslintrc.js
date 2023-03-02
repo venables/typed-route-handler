@@ -10,31 +10,49 @@ module.exports = {
     "plugin:import/typescript",
     "prettier"
   ],
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaVersion: 13,
-    sourceType: "module"
-  },
-  plugins: ["@typescript-eslint", "import"],
+  overrides: [
+    {
+      files: ["**/__tests__/**/*.{ts,tsx}", "**/?(*.)+(spec|test).{ts,tsx}"],
+      env: {
+        jest: true
+      },
+      extends: ["plugin:jest/recommended", "plugin:jest/style"],
+      rules: {
+        "@typescript-eslint/no-non-null-assertion": "off"
+      }
+    }
+  ],
   rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        caughtErrors: "none",
+        varsIgnorePattern: "^_"
+      }
+    ],
     "import/order": [
       "error",
       {
+        "newlines-between": "always",
+        groups: [
+          ["builtin", "external"],
+          "internal",
+          ["sibling", "parent"],
+          "index",
+          "object",
+          "type"
+        ],
         alphabetize: {
           order: "asc"
         }
       }
-    ]
-  },
-  settings: {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
-        moduleDirectory: ["node_modules", __dirname]
+    ],
+    "sort-imports": [
+      "error",
+      {
+        ignoreDeclarationSort: true
       }
-    }
+    ]
   }
 }
