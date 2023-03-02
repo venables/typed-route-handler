@@ -3,3 +3,6 @@ node_modules
 
 # Build artifacts
 dist
+
+# Test artifacts
+coverage
