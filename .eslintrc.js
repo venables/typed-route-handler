@@ -11,17 +11,49 @@ module.exports = {
     "prettier"
   ],
   overrides: [
+    /**
+     * Typescript Configuration
+     */
     {
-      files: ["**/__tests__/**/*.{ts,tsx}", "**/?(*.)+(spec|test).{ts,tsx}"],
+      files: ["*.ts", "*.tsx", "*.d.ts"],
+      parserOptions: {
+        project: "./tsconfig.json"
+      }
+    },
+    /**
+     * Config files (e.g. metro.config.js)
+     */
+    {
+      files: ["*.config.js"],
+      env: {
+        node: true
+      },
+      rules: {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    /**
+     * Jest Configuration
+     */
+    {
+      files: ["**/__tests__/**/*.{ts,tsx}", "**/*.test.{ts,tsx}"],
       env: {
         jest: true
       },
       extends: ["plugin:jest/recommended", "plugin:jest/style"],
+      plugins: ["jest"],
       rules: {
         "@typescript-eslint/no-non-null-assertion": "off"
       }
     }
   ],
+  settings: {
+    "import/resolver": {
+      typescript: {
+        project: "<root>/tsconfig.json"
+      }
+    }
+  },
   rules: {
     "@typescript-eslint/no-unused-vars": [
       "warn",
