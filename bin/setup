@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+echo "✨ Installing dependencies ..."
+pnpm install --frozen-lockfile
+
+echo "\n✨ Done. Happy coding."
