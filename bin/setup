@@ -3,4 +3,11 @@
 echo "✨ Installing dependencies ..."
 pnpm install --frozen-lockfile
 
+echo "\n✨ Creating .env file..."
+if [ -f .env ]; then
+    echo "File already exists, skipping."
+else
+  cp .env.example .env
+fi
+
 echo "\n✨ Done. Happy coding."

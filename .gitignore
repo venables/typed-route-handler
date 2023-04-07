@@ -6,3 +6,6 @@ dist
 
 # Test artifacts
 coverage
+
+# local env files
+.env
