@@ -1,48 +1,56 @@
 {
   "name": "startkit-typescript",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc --build --clean && tsc --project tsconfig.build.json && resolve-tspaths",
-    "check": "run-s type-check lint format:check test",
-    "clean": "rimraf dist",
-    "dev": "ts-node -r dotenv/config -r tsconfig-paths/register ./lib/index.ts",
-    "format": "prettier  --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint . --ext .ts",
-    "prepublish": "run-s clean build",
-    "setup": "./bin/setup",
-    "start": "node dist/index.js",
-    "test": "jest",
-    "type-check": "tsc --pretty --noEmit"
-  },
   "keywords": [],
-  "author": "",
+  "homepage": "https://github.com/startkit-dev/startkit-typescript#readme",
+  "bugs": {
+    "url": "https://github.com/startkit-dev/startkit-typescript/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/startkit-dev/startkit-typescript.git"
+  },
   "license": "MIT",
+  "author": "",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "startkit-typescript": "./dist/cli.js"
+  },
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "tsup lib/index.ts lib/cli.ts --dts --clean --format cjs,esm",
+    "check": "concurrently bun:type-check bun:lint bun:format:check bun:test",
+    "clean": "git clean -xdf dist",
+    "dev": "tsx ./lib/cli.ts",
+    "format": "prettier --write . --ignore-path .gitignore",
+    "format:check": "prettier --check . --ignore-path .gitignore",
+    "lint": "eslint lib --ext .ts",
+    "outdated": "npx npm-check-updates --interactive --format group",
+    "prepublish": "bun run build",
+    "setup": "./bin/setup",
+    "start": "node dist/cli.js",
+    "test": "bun test",
+    "type-check": "tsc --pretty --noEmit"
+  },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "dotenv": "^16.0.3",
-    "eslint": "^8.37.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jest": "^27.2.1",
-    "jest": "^29.5.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.7",
-    "resolve-tspaths": "^0.8.8",
-    "rimraf": "^4.4.1",
-    "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.0.3"
+    "@types/jest": "^29.5.10",
+    "@types/node": "^20.9.4",
+    "@vercel/style-guide": "^5.1.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.1.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.3.0",
+    "typescript": "^5.3.2"
   }
 }

@@ -1,27 +1,17 @@
+/** @type {import("eslint").Linter.Config} */
 module.exports = {
-  env: {
-    es2021: true,
-    node: true
-  },
+  root: true,
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "prettier"
+    require.resolve("@vercel/style-guide/eslint/node"),
+    require.resolve("@vercel/style-guide/eslint/typescript")
   ],
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: true
+  },
   overrides: [
     /**
-     * Typescript Configuration
-     */
-    {
-      files: ["*.ts", "*.tsx", "*.d.ts"],
-      parserOptions: {
-        project: "./tsconfig.json"
-      }
-    },
-    /**
-     * Config files (e.g. metro.config.js)
+     * Config files (ex: jest.config.js, prettier.config.js, tailwind.config.js)
      */
     {
       files: ["*.config.js"],
@@ -40,21 +30,36 @@ module.exports = {
       env: {
         jest: true
       },
-      extends: ["plugin:jest/recommended", "plugin:jest/style"],
+      extends: [
+        require.resolve("@vercel/style-guide/eslint/jest"),
+        "plugin:jest/style"
+      ],
       plugins: ["jest"],
       rules: {
-        "@typescript-eslint/no-non-null-assertion": "off"
+        /**
+         * Allow non-null assertions in tests
+         */
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "eslint-comments/require-description": "off"
       }
     }
   ],
-  settings: {
-    "import/resolver": {
-      typescript: {
-        project: "<root>/tsconfig.json"
-      }
-    }
-  },
   rules: {
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { prefer: "type-imports", fixStyle: "inline-type-imports" }
+    ],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        checksVoidReturn: {
+          arguments: false,
+          attributes: false
+        }
+      }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {

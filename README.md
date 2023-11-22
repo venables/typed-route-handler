@@ -7,19 +7,19 @@
 To get started simply run the following command.
 
 ```sh
-pnpm run setup
+bun run setup
 ```
 
 ## Local Development
 
 ```sh
-pnpm dev
+bun dev
 ```
 
 ## Building
 
 ```sh
-pnpm build
+bun build
 ```
 
 ## Linting / Checking the codebase
@@ -27,35 +27,35 @@ pnpm build
 To run a full check of the codebase (type-check, lint, prettier check, test), run:
 
 ```sh
-pnpm check
+bun check
 ```
 
 ### Linting
 
 ```sh
-pnpm lint
+bun lint
 ```
 
 ### Type Checking
 
 ```sh
-pnpm type-check
+bun type-check
 ```
 
 ### Formatting with Prettier
 
 ```sh
-pnpm format
+bun format
 ```
 
 to check for format errors, run:
 
 ```sh
-pnpm format:check
+bun format:check
 ```
 
 ### Testing via Jest
 
 ```sh
-pnpm test
+bun test
 ```
