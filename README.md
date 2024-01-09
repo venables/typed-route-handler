@@ -229,7 +229,7 @@ try {
 
 ## 🏰 Production Ready
 
-Already widely used in high-traffic production apps in [songbpm](https://songbpm.com), [jog.fm](https://jog.fm), [usdc.cool](https://usdc.cool), as well as all [StartKit](htts://github.com/startkit-dev/startkit-next) projects.
+Already widely used in high-traffic production apps in [songbpm](https://songbpm.com), [jog.fm](https://jog.fm), [usdc.cool](https://usdc.cool), as well as all [StartKit](https://github.com/startkit-dev/startkit) projects.
 
 ## ❤️ Open Source
 
