@@ -2,11 +2,12 @@
 
 <div align="center">
   <strong>Type-safe Route Handlers for Next.js</strong>
+  <p>It's like the missing API endpoint layer for Next.js</p>
 </div>
 
 ```ts
 type ResponseData = {
-  result: string,
+  result: string
   over: number
 }
 
