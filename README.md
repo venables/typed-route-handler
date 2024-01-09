@@ -1,61 +1,238 @@
-# startkit-typescript
+<h1 align="center">typed-route-handler</h1>
 
-> A sane starting point for Typescript projects.
+<div align="center">
+  <strong>Type-safe Route Handlers for Next.js</strong>
+</div>
 
-## Getting started
+## Features
 
-To get started simply run the following command.
+- ✅ **Type-safe** route handler responses
+- ✅ **Type-safe** route handler parameters
+- ✅ Extended Next.js **error handling**
+- ✅ Full **zod compatibility**
+- ✅ Route handler **timing**
+- ✅ Request **logging**
+- ✅ Production ready
 
-```sh
-bun run setup
-```
-
-## Local Development
-
-```sh
-bun dev
-```
-
-## Building
+## Installation
 
 ```sh
-bun build
+npm i typed-route-handler
 ```
 
-## Linting / Checking the codebase
+## Usage
 
-To run a full check of the codebase (type-check, lint, prettier check, test), run:
+Typed handler is easy to use: In the simplest case, just wrap your Route Handler with `handler` and you're good to go!
 
-```sh
-bun check
+```diff
++ import { handler } from 'typed-route-handler'
+
+- export const GET = async (req: NextRequest) => {
++ export const GET = handler(async (req) => {
+    // ...
+- }
++ })
 ```
 
-### Linting
+## Typed Responses
 
-```sh
-bun lint
+The real magic comes when you add typing to your responses.
+
+```ts
+import { NextResponse } from "next"
+
+type ResponseData = {
+  name: string
+  age: number
+}
+
+export const GET = handler<ResponseData>((req) => {
+  // ...
+
+  return NextResponse.json({
+    name: "Bluey",
+    age: 7,
+    something: "else" // <-- this will cause a type error
+  })
+})
 ```
 
-### Type Checking
+## Typed Parameters
 
-```sh
-bun type-check
+We can also add type verification to our parameters.
+
+```ts
+import { NextResponse } from "next"
+
+type ResponseData = {
+  name: string
+}
+
+type Context = {
+  params: {
+    userId: string
+  }
+}
+
+export const GET = handler<ResponseData, Context>((req, context) => {
+  // ...
+  const userId = context.params.userId // <-- this will be type-safe
+
+  return NextResponse.json({
+    name: "Bluey"
+  })
+})
 ```
 
-### Formatting with Prettier
+This can get even more powerful with `zod`
 
-```sh
-bun format
+```ts
+import { NextResponse } from "next"
+import { z } from "zod"
+
+type ResponseData = {
+  name: string
+}
+
+const contextSchema = z.object({
+  params: z.object({
+    id: z.string()
+  })
+})
+
+export const GET = handler<ResponseData, z.infer<typeof contextSchema>>(
+  (req, context) => {
+    // ...
+    const userId = context.params.userId // <-- this will still be type-safe
+
+    // or you can parse the schema:
+    const { params } = contextSchema.parse(context)
+
+    return NextResponse.json({
+      name: "Bluey"
+    })
+  }
+)
 ```
 
-to check for format errors, run:
+## Typed request bodies
 
-```sh
-bun format:check
+Similarly, you can use `zod` to parse request bodies:
+
+```ts
+import { NextResponse } from "next"
+import { z } from "zod"
+
+type ResponseData = {
+  name: string
+}
+
+const bodySchema = z.object({
+  username: z.string()
+})
+
+export const PUT = handler<ResponseData>((req, context) => {
+  const body = bodySchema.parse(await req.json())
+
+  // If the body does not satisfy `bodySchema`, the route handler will catch
+  // the error and return a 400 error with the error details.
+
+  return NextResponse.json({
+    name: body.username
+  })
+})
 ```
 
-### Testing via Jest
+## Automatic `zod` issue handling
 
-```sh
-bun test
+When a zod error is thrown in the handler, it will be caught automatically and
+converted to a Validation Error with a 400 status code.
+
+Example:
+
+```json
+{
+  "error": "Validation Error",
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": ["name"],
+      "message": "Required"
+    }
+  ]
+}
 ```
+
+## Extended Next.js errors
+
+This library adds the following convenience methods to Route Handlers.
+
+Similar to how Next.js offers `notFound()` and `redirect()`, typed-route-handler offers:
+
+- `unauthorized()`
+- `validationError()`
+
+For example:
+
+```ts
+export const GET = handler(async (req) => {
+  const session = await auth()
+
+  if (!session) {
+    unauthorized()
+  }
+})
+```
+
+This will return the following HTTP 401 Unauthorized body:
+
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+## Client-side Usage
+
+`typed-route-handler` comes with a client library that extends the traditional `fetch` API with type information.
+
+The `typedFetch` function will automatically parse the response as JSON, and apply the proper types. On an error response, it will throw.
+
+```ts
+import { typedFetch } from "typed-route-handler/client"
+
+const data = await typedFetch<{ id: number; username: string }>("/api/user")
+
+data.id // <-- number
+data.username // <-- string
+```
+
+If there's an API error, it will be thrown by the client:
+
+```ts
+import { typedFetch } from "typed-route-handler/client"
+
+try {
+  await typedFetch("/api/user")
+} catch (e) {
+  e.message // <-- Validation Error, etc
+}
+```
+
+## Roadmap
+
+- [ ] Add support for streaming responses (generic `Response` type)
+- [ ] Add support for custom API response formats
+- [ ] Client-side error handling with zod issues
+
+## 🏰 Production Ready
+
+Already widely used in high-traffic production apps in [songbpm](https://songbpm.com), [jog.fm](https://jog.fm), [usdc.cool](https://usdc.cool), as well as all [StartKit](htts://github.com/startkit-dev/startkit-next) projects.
+
+## ❤️ Open Source
+
+This project is MIT-licensed and is free to use and modify for your own projects.
+
+It was created by [Matt Venables](https://venabl.es).

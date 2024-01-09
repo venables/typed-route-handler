@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-echo "✨ Installing dependencies ..."
-bun install --frozen-lockfile
-
-echo "\n✨ Done. Happy coding."

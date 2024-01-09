@@ -2,8 +2,11 @@
 module.exports = {
   root: true,
   extends: [
+    require.resolve("@vercel/style-guide/eslint/browser"),
+    require.resolve("@vercel/style-guide/eslint/next"),
     require.resolve("@vercel/style-guide/eslint/node"),
-    require.resolve("@vercel/style-guide/eslint/typescript")
+    require.resolve("@vercel/style-guide/eslint/typescript"),
+    "next/core-web-vitals"
   ],
   parserOptions: {
     tsconfigRootDir: __dirname,
@@ -45,12 +48,18 @@ module.exports = {
     }
   ],
   rules: {
-    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "@typescript-eslint/consistent-type-imports": [
       "error",
       { prefer: "type-imports", fixStyle: "inline-type-imports" }
     ],
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-invalid-void-type": [
+      "error",
+      {
+        allowInGenericTypeArguments: true
+      }
+    ],
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
