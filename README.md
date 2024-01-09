@@ -4,6 +4,20 @@
   <strong>Type-safe Route Handlers for Next.js</strong>
 </div>
 
+```ts
+type ResponseData = {
+  result: string,
+  over: number
+}
+
+export const GET = handler<ResponseData>(async (req) => {
+  return NextResponse.json({
+    result: "this response is type-checked",
+    over: 9000
+  })
+})
+```
+
 ## Features
 
 - ✅ **Type-safe** route handler responses
