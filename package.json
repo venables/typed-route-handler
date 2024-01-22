@@ -28,7 +28,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "client"
+    "client.js"
   ],
   "scripts": {
     "build": "tsup lib/index.ts lib/client/index.ts --dts --clean --format cjs,esm",
