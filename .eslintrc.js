@@ -17,12 +17,13 @@ module.exports = {
      * Config files (ex: jest.config.js, prettier.config.js, tailwind.config.js)
      */
     {
-      files: ["*.config.js"],
+      files: ["*.config.{ts,js}"],
       env: {
         node: true
       },
       rules: {
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-default-export": "off"
       }
     },
     /**

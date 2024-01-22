@@ -19,21 +19,31 @@
   "license": "MIT",
   "author": "Matt Venables <matt@venabl.es>",
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.js",
-    "client": "./dist/client.mjs"
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "module": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./client/index.d.ts",
+      "import": "./client/index.mjs",
+      "module": "./client/index.mjs",
+      "require": "./client/index.js"
+    }
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "client.js"
+    "dist/**/*",
+    "client/**/*"
   ],
   "scripts": {
-    "build": "tsup lib/index.ts lib/client/index.ts --dts --clean --format cjs,esm",
+    "build": "tsup",
     "check": "concurrently bun:type-check bun:lint bun:format:check bun:test",
-    "clean": "git clean -xdf dist",
+    "clean": "git clean -xdf dist client",
     "format": "prettier --write . --ignore-path .gitignore",
     "format:check": "prettier --check . --ignore-path .gitignore",
     "lint": "eslint lib --ext .ts",
