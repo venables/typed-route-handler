@@ -1,6 +1,6 @@
 {
   "name": "typed-route-handler",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Type-safe route handlers for Next.js",
   "keywords": [
     "next",
@@ -42,19 +42,18 @@
   ],
   "scripts": {
     "build": "tsup",
-    "check": "concurrently bun:type-check bun:lint bun:format:check bun:test",
+    "check": "concurrently bun:type-check bun:lint bun:oxlint bun:format:check bun:test",
     "clean": "git clean -xdf dist client",
     "format": "prettier --write . --ignore-path .gitignore",
     "format:check": "prettier --check . --ignore-path .gitignore",
     "lint": "eslint lib --ext .ts",
     "outdated": "npx npm-check-updates --interactive --format group",
+    "oxlint": "oxlint",
     "prepublish": "bun run build",
     "test": "bun test",
     "type-check": "tsc --pretty --noEmit"
   },
-  "dependencies": {
-    "zod": "^3.22.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^29.5.10",
     "@types/node": "^20.9.4",
@@ -63,12 +62,14 @@
     "eslint": "^8.54.0",
     "eslint-config-next": ">= 13",
     "jest": "^29.7.0",
+    "oxlint": "^0.2.12",
     "prettier": "^3.1.0",
     "tsup": "^8.0.1",
     "tsx": "^4.3.0",
     "typescript": "^5.3.2"
   },
   "peerDependencies": {
-    "next": ">= 13"
+    "next": ">= 13",
+    "zod": ">= 3.22"
   }
 }

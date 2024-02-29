@@ -1,19 +1,23 @@
 /* eslint-disable no-console -- this is a logger */
 import type { NextRequest } from "../types"
 
-export function logRequest(request: NextRequest): void
-export function logRequest(
-  request: NextRequest,
+function isNextRequest(request: Request): request is NextRequest {
+  return "nextUrl" in request
+}
+
+export function logRequest<V extends Request>(request: V): void
+export function logRequest<V extends Request>(
+  request: V,
   response: Response,
   responseTime: number
 ): void
-export function logRequest(
-  request: NextRequest,
+export function logRequest<V extends Request>(
+  request: V,
   response?: Response,
   responseTime?: number
 ) {
   const method = request.method
-  const url = request.nextUrl.pathname
+  const url = isNextRequest(request) ? request.nextUrl.pathname : request.url
 
   if (response?.ok) {
     console.log(

@@ -20,7 +20,6 @@ export const apiResponseErrorSchema = z.object({
   error: z.string(),
   issues: z.array(zodIssueSchema).optional()
 })
-
 export type ApiResponseError = z.infer<typeof apiResponseErrorSchema>
 
 /**
@@ -29,11 +28,12 @@ export type ApiResponseError = z.infer<typeof apiResponseErrorSchema>
 export type ApiResponse<T> = T | ApiResponseError
 
 /**
- *
+ * The default value of the next.js route parameter
  */
-export interface NextRequestContext<T> {
-  params: T
-}
+export const nextRouteParamsSchema = z.record(
+  z.union([z.string(), z.array(z.string())])
+)
+export type NextRouteParams = z.infer<typeof nextRouteParamsSchema>
 
 /**
  * The Context parameter for route handlers, which is currently an optional
@@ -41,16 +41,20 @@ export interface NextRequestContext<T> {
  *
  * See: https://nextjs.org/docs/app/api-reference/file-conventions/route#context-optional
  */
-export interface NextRouteContext<T = undefined> {
-  params: T
+export interface NextRouteContext<U = NextRouteParams> {
+  params?: U
 }
 
 /**
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
  */
-export type NextRouteHandler<T = void, U = NextRouteContext> = (
+export type NextRouteHandler<
+  T = void,
+  U = NextRouteContext,
+  V extends Request = NextRequest
+> = (
   // https://nextjs.org/docs/app/api-reference/file-conventions/route#request-optional
-  request: NextRequest,
+  request: V,
   // https://nextjs.org/docs/app/api-reference/file-conventions/route#context-optional
   context: U
 ) => NextResponse<T> | Promise<NextResponse<T>>

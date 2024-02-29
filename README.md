@@ -32,7 +32,7 @@ export const GET = handler<ResponseData>(async (req) => {
 ## Installation
 
 ```sh
-npm i typed-route-handler
+npm i typed-route-handler zod next
 ```
 
 ## Usage
@@ -74,7 +74,7 @@ export const GET = handler<ResponseData>((req) => {
 
 ## Typed Parameters
 
-We can also add type verification to our parameters.
+We can also add type verification to our parameters. Each parameter `Context` extends from `NextRouteContext` which is a helper type mapping to: `{ params?: Record<string, string | string[]> }`.
 
 ```ts
 import { NextResponse } from "next"
@@ -209,6 +209,26 @@ This will return the following HTTP 401 Unauthorized body:
 }
 ```
 
+## Usage with modified `req`s (e.g. next-auth)
+
+When using this library with next-auth or other libraries which modify the `req` objects, you can pass a 3rd type to the `handler` call. You may also need to place `handler` within the other middleware because the other handlers may mask the return types, disabling the type-checking from `typed-route-handler` For example:
+
+````ts
+import { auth } from '@/auth'
+import { type NextAuthRequest } from 'next-auth'
+import { handler, type type NextRouteContext, unauthorized } from 'typed-route-handler'
+
+export const GET = auth(
+  handler<ResponseBody, NextRouteContext, NextAuthRequest>((req, ctx) => {
+    if (!req.auth?.user) {
+      unauthorized()
+    }
+
+    // ...
+  })
+)
+```
+
 ## Client-side Usage
 
 `typed-route-handler` comes with a client library that extends the traditional `fetch` API with type information.
@@ -222,7 +242,7 @@ const data = await typedFetch<{ id: number; username: string }>("/api/user")
 
 data.id // <-- number
 data.username // <-- string
-```
+````
 
 If there's an API error, it will be thrown by the client:
 

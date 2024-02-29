@@ -2,6 +2,7 @@ import { logRequest } from "./logger"
 import { buildErrorResponse } from "../errors/error-response"
 import {
   type ApiResponse,
+  type NextRequest,
   type NextResponse,
   type NextRouteContext,
   type NextRouteHandler
@@ -31,9 +32,13 @@ import {
  * @param handler - the api handler
  * @returns a wrapped api handler
  */
-export const handler = <T = void, U = NextRouteContext>(
-  routeHandler: NextRouteHandler<ApiResponse<T>, U>
-): NextRouteHandler<ApiResponse<T>, U> => {
+export const handler = <
+  T = void,
+  U = NextRouteContext,
+  V extends Request = NextRequest
+>(
+  routeHandler: NextRouteHandler<ApiResponse<T>, U, V>
+): NextRouteHandler<ApiResponse<T>, U, V> => {
   return async (request, context) => {
     const startTime = new Date()
 
