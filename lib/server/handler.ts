@@ -1,9 +1,9 @@
+import { type NextRequest, type NextResponse } from "next/server"
+
 import { logRequest } from "./logger"
 import { buildErrorResponse } from "../errors/error-response"
 import {
   type ApiResponse,
-  type NextRequest,
-  type NextResponse,
   type NextRouteContext,
   type NextRouteHandler
 } from "../types"

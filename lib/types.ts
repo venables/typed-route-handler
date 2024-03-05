@@ -1,8 +1,6 @@
 import { type NextRequest, type NextResponse } from "next/server"
 import { type ZodIssue, z } from "zod"
 
-export type { NextResponse, NextRequest, ZodIssue }
-
 /**
  * Schema for a zod error type
  */

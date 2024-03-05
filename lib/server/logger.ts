@@ -1,5 +1,5 @@
 /* eslint-disable no-console -- this is a logger */
-import type { NextRequest } from "../types"
+import type { NextRequest } from "next/server"
 
 function isNextRequest(request: Request): request is NextRequest {
   return "nextUrl" in request
