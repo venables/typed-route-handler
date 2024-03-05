@@ -1,5 +1,7 @@
 import { type NextRequest, type NextResponse } from "next/server"
 
+import { type TypedRouteOnErrorCallback } from "lib/errors/error-handler"
+
 import { logRequest } from "./logger"
 import { buildErrorResponse } from "../errors/error-response"
 import {
@@ -30,6 +32,7 @@ import {
  * ```
  *
  * @param handler - the api handler
+ * @param onError - an optional callback when an error occurs
  * @returns a wrapped api handler
  */
 export const handler = <
@@ -37,7 +40,8 @@ export const handler = <
   U = NextRouteContext,
   V extends Request = NextRequest
 >(
-  routeHandler: NextRouteHandler<ApiResponse<T>, U, V>
+  routeHandler: NextRouteHandler<ApiResponse<T>, U, V>,
+  onError?: TypedRouteOnErrorCallback
 ): NextRouteHandler<ApiResponse<T>, U, V> => {
   return async (request, context) => {
     const startTime = new Date()
@@ -52,7 +56,7 @@ export const handler = <
     try {
       response = await routeHandler(request, context)
     } catch (err) {
-      response = buildErrorResponse(err)
+      response = buildErrorResponse(err, onError)
     }
 
     /**

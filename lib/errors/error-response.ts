@@ -2,18 +2,24 @@ import { NextResponse } from "next/server"
 import { ZodError } from "zod"
 
 import { isApiError } from "./api-error"
+import { type TypedRouteOnErrorCallback } from "./error-handler"
 import { isNextJsError } from "./nextjs-error"
 
 import type { ApiResponseError } from "../types"
 
 export function buildErrorResponse(
-  err: unknown
+  err: unknown,
+  onError?: TypedRouteOnErrorCallback
 ): NextResponse<ApiResponseError> {
   /**
    * Let Next.js handle its own errors
    */
   if (isNextJsError(err)) {
     throw err
+  }
+
+  if (onError) {
+    void onError(err)
   }
 
   /**

@@ -213,7 +213,7 @@ This will return the following HTTP 401 Unauthorized body:
 
 When using this library with next-auth or other libraries which modify the `req` objects, you can pass a 3rd type to the `handler` call. You may also need to place `handler` within the other middleware because the other handlers may mask the return types, disabling the type-checking from `typed-route-handler` For example:
 
-````ts
+```ts
 import { auth } from '@/auth'
 import { type NextAuthRequest } from 'next-auth'
 import { handler, type type NextRouteContext, unauthorized } from 'typed-route-handler'
@@ -226,6 +226,24 @@ export const GET = auth(
 
     // ...
   })
+)
+```
+
+## Error handling
+
+By default all errors are handled by the handler. However, it is often smart to send an issue to a bug reporting tool like Sentry. To dot his, you can pass a second argument to `handler` which is an onError callback.
+
+```ts
+import { handler } from "typed-route-handler"
+
+export const GET = handler(
+  () => {
+    throw new Error()
+  },
+  (err) => {
+    console.log("onError callback!")
+    Sentry.captureException(err)
+  }
 )
 ```
 
@@ -242,7 +260,7 @@ const data = await typedFetch<{ id: number; username: string }>("/api/user")
 
 data.id // <-- number
 data.username // <-- string
-````
+```
 
 If there's an API error, it will be thrown by the client:
 
