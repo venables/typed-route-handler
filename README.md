@@ -187,6 +187,7 @@ This library adds the following convenience methods to Route Handlers.
 Similar to how Next.js offers `notFound()` and `redirect()`, typed-route-handler offers:
 
 - `unauthorized()`
+- `forbidden()`
 - `validationError()`
 
 For example:
