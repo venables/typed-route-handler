@@ -1,14 +1,10 @@
-import { type NextRequest, type NextResponse } from "next/server"
+import type { NextRequest, NextResponse } from "next/server"
 
-import { type TypedRouteOnErrorCallback } from "lib/errors/error-handler"
+import type { TypedRouteOnErrorCallback } from "lib/errors/error-handler"
 
 import { logRequest } from "./logger"
 import { buildErrorResponse } from "../errors/error-response"
-import {
-  type ApiResponse,
-  type NextRouteContext,
-  type NextRouteHandler
-} from "../types"
+import type { ApiResponse, NextRouteContext, NextRouteHandler } from "../types"
 
 /**
  * Wrap an API handler with additional logging, error handling, etc.
@@ -62,7 +58,7 @@ export const handler = <
     /**
      * Log the HTTP response status & timing
      */
-    logRequest(request, response, new Date().getTime() - startTime.getTime())
+    logRequest(request, response, Date.now() - startTime.getTime())
 
     return response
   }

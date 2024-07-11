@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { ZodError } from "zod"
 
 import { isApiError } from "./api-error"
-import { type TypedRouteOnErrorCallback } from "./error-handler"
+import type { TypedRouteOnErrorCallback } from "./error-handler"
 import { isNextJsError } from "./nextjs-error"
 
 import type { ApiResponseError } from "../types"

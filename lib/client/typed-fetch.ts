@@ -1,4 +1,4 @@
-import { type ApiResponseError } from "../types"
+import type { ApiResponseError } from "../types"
 
 /**
  * Simple check to see if the response is an error. This method could be
@@ -30,7 +30,7 @@ export async function typedFetch<T>(url: string, options?: RequestInit) {
 
   try {
     json = await response.json()
-  } catch (e) {
+  } catch (_e) {
     throw new Error("Invalid JSON response")
   }
 
