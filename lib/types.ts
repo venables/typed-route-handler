@@ -29,18 +29,17 @@ export type ApiResponse<T> = T | ApiResponseError
  * The default value of the next.js route parameter
  */
 export const nextRouteParamsSchema = z.record(
-  z.union([z.string(), z.array(z.string())])
+  z.union([z.string(), z.array(z.string()), z.undefined()])
 )
 export type NextRouteParams = z.infer<typeof nextRouteParamsSchema>
 
 /**
- * The Context parameter for route handlers, which is currently an optional
- * `params` object.
+ * The Context parameter for route handlers, which is currently a `params` promise.
  *
  * See: https://nextjs.org/docs/app/api-reference/file-conventions/route#context-optional
  */
 export interface NextRouteContext<U = NextRouteParams> {
-  params?: U
+  params: Promise<U>
 }
 
 /**

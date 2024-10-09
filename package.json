@@ -1,6 +1,6 @@
 {
   "name": "typed-route-handler",
-  "version": "0.3.0",
+  "version": "0.4.0-canary.1",
   "description": "Type-safe route handlers for Next.js",
   "keywords": ["next", "route handler", "typescript", "api"],
   "homepage": "https://github.com/venables/typed-route-handler#readme",
@@ -34,25 +34,25 @@
   "files": ["dist/**/*", "client/**/*"],
   "scripts": {
     "build": "tsup",
-    "check": "biome check . && bun run type-check && bun test",
+    "check": "biome check . && bun run typecheck && bun test",
     "clean": "git clean -xdf dist client",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
     "outdated": "npx npm-check-updates --interactive --format group",
     "prepublish": "bun run build",
-    "type-check": "tsc --noEmit --pretty"
+    "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {},
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
-    "@types/bun": "^1.1.6",
-    "tsup": "^8.1.0",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.3"
+    "@biomejs/biome": "1.9.3",
+    "@types/bun": "^1.1.11",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
   },
   "peerDependencies": {
-    "next": ">= 13",
+    "next": ">= 15",
     "zod": ">= 3.22"
   }
 }
