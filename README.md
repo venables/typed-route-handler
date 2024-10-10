@@ -19,6 +19,9 @@ export const GET = handler<ResponseData>(async (req) => {
 })
 ```
 
+> [!NOTE]  
+> To use this library with Next.js `15.0.0-canary.171` or higher, use typed-route-handler version `0.4.0-canary.1`  or higher (tracking on the [`next-15`](https://github.com/venables/typed-route-handler/tree/next-15) branch), which supports the new async params types.  Once Next 15 is released, that branch will be merged into main and the library will be updated.
+
 ## Features
 
 - ✅ **Type-safe** route handler responses
