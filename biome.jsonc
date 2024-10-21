@@ -1,115 +1,29 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "css": {
-    "formatter": {
-      "enabled": true
-    }
-  },
-  "files": {
-    "ignore": ["./.vscode/*.json", "./migrations/"]
-  },
-  "formatter": {
+  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "vcs": {
     "enabled": true,
-    "indentStyle": "space"
-  },
-  "javascript": {
-    "formatter": {
-      "semicolons": "asNeeded",
-      "trailingCommas": "none"
-    }
+    "clientKind": "git",
+    "useIgnoreFile": true
   },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUndeclaredVariables": {
-          "level": "warn"
-        },
-        "noUnusedImports": {
-          "level": "warn",
-          "fix": "none"
-        },
-        "noUnusedPrivateClassMembers": {
-          "level": "warn"
-        },
-        "noUnusedVariables": {
-          "level": "warn",
-          "fix": "none"
-        },
-        "useHookAtTopLevel": {
-          "level": "warn",
-          "options": {}
-        }
-      },
-      "nursery": {
-        "noDuplicateElseIf": {
-          "level": "warn"
-        },
-        "noDuplicateJsonKeys": {
-          "level": "warn"
-        },
-        "noMisplacedAssertion": {
-          "level": "warn"
-        },
-        "noUnusedFunctionParameters": {
-          "level": "warn"
-        },
-        "noUselessStringConcat": {
-          "level": "warn"
-        },
-        "noYodaExpression": {
-          "level": "warn"
-        },
-        "useAdjacentOverloadSignatures": {
-          "level": "warn"
-        },
-        "useDateNow": {
-          "level": "warn"
-        },
-        "useErrorMessage": {
-          "level": "warn"
-        },
-        "useSemanticElements": {
-          "level": "warn"
-        },
-        "useThrowNewError": {
-          "level": "warn"
-        }
-      },
-      "style": {
-        "useBlockStatements": {
-          "level": "warn"
-        },
-        "useCollapsedElseIf": {
-          "level": "warn"
-        },
-        "useFilenamingConvention": {
-          "level": "warn",
-          "options": {
-            "requireAscii": true
-          }
-        },
-        "useForOf": {
-          "level": "warn"
-        }
-      },
-      "suspicious": {
-        "noEmptyBlockStatements": {
-          "level": "warn"
-        },
-        "useAwait": {
-          "level": "warn"
-        }
-      }
+      "recommended": true
     }
   },
   "organizeImports": {
     "enabled": false
   },
-  "vcs": {
+  "formatter": {
     "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "asNeeded",
+      "trailingCommas": "none"
+    }
   }
 }
