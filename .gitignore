@@ -3,7 +3,6 @@ node_modules
 
 # Build artifacts
 dist
-/client
 
 # Test artifacts
 coverage

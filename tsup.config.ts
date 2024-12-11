@@ -8,13 +8,5 @@ export default defineConfig([
     external: ["next"],
     dts: true,
     sourcemap: true
-  },
-  // Client APIs
-  {
-    entry: ["lib/client/index.ts"],
-    outDir: "client",
-    format: ["cjs", "esm"],
-    dts: true,
-    sourcemap: true
   }
 ])
