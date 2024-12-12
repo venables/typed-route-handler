@@ -5,17 +5,19 @@
 </div>
 
 ```ts
+import type { Handler } from 'typed-route-handler'
+
 type ResponseData = {
   result: string
   over: number
 }
 
-export const GET = handler<ResponseData>(async (req) => {
+export const GET: Handler<ResponseData> = async (req) => {
   return NextResponse.json({
     result: "this response is type-checked",
     over: 9000
   })
-})
+}
 ```
 
 > [!NOTE]
@@ -31,21 +33,23 @@ export const GET = handler<ResponseData>(async (req) => {
 ## Installation
 
 ```sh
-npm i typed-route-handler
+npm i -D typed-route-handler
 ```
+
+This library can be installed as a devDependency when only used for types. If you'd like to use the [wrapper](#wrapper) function, you can install it as a regular dependency.
 
 ## Usage
 
-Typed handler is easy to use: In the simplest case, just wrap your Route Handler with `handler` and you're good to go!
+Typed handler is easy to use: In the simplest case, just add the type `Handler` to your route handler and you're good to go!
 
 ```diff
-+ import { handler } from 'typed-route-handler'
++ import type { Handler } from 'typed-route-handler'
 
 - export const GET = async (req: NextRequest) => {
-+ export const GET = handler(async (req) => {
++ export const GET: Handler = async (req) => {
     // ...
 - }
-+ })
++ }
 ```
 
 ## Typed Responses
@@ -54,117 +58,109 @@ The real magic comes when you add typing to your responses.
 
 ```ts
 import { NextResponse } from "next"
+import type { Handler } from 'typed-route-handler'
 
 type ResponseData = {
   name: string
   age: number
 }
 
-export const GET = handler<ResponseData>((req) => {
-  // ...
-
+export const GET: Handler<ResponseData> = (req) => {
   return NextResponse.json({
     name: "Bluey",
-    age: 7,
-    something: "else" // <-- this will cause a type error
+    age: "seven", // <-- this will cause a type error
   })
-})
+}
 ```
 
 ## Typed Parameters
 
-We can also add type verification to our parameters. Each parameter `Context` extends from `NextRouteContext` which is a helper type mapping to: `{ params?: Record<string, string | string[]> }`.
+We can also add type verification to our parameters. Each parameter `Context` extends from `NextRouteContext`.  
 
 ```ts
-import { NextResponse } from "next"
+// app/api/[name]/route.ts
+import { NextResponse } from "next/server"
+import { type Handler, type NextRouteContext } from "typed-route-handler"
 
 type ResponseData = {
   name: string
 }
 
-type Context = {
-  params: {
-    userId: string
-  }
-}
+type Context = NextRouteContext<{
+  name: string
+}>
 
-export const GET = handler<ResponseData, Context>((req, context) => {
-  // ...
-  const userId = context.params.userId // <-- this will be type-safe
+export const GET: Handler<ResponseData, Context> = async (req, context) => {
+  const { name } = await context.params // <-- this will be type-safe
 
   return NextResponse.json({
-    name: "Bluey"
+    name
   })
-})
+}
 ```
 
-This can get even more powerful with `zod`
+Note that this does not perform any runtime type-checking. To do that, you can use the zod types:
 
 ```ts
-import { NextResponse } from "next"
+import { NextResponse } from "next/server"
 import { z } from "zod"
+import { type Handler } from "typed-route-handler"
 
 type ResponseData = {
   name: string
 }
 
 const contextSchema = z.object({
-  params: z.object({
-    id: z.string()
-  })
-})
-
-export const GET = handler<ResponseData, z.infer<typeof contextSchema>>(
-  (req, context) => {
-    // ...
-    const userId = context.params.userId // <-- this will still be type-safe
-
-    // or you can parse the schema:
-    const { params } = contextSchema.parse(context)
-
-    return NextResponse.json({
-      name: "Bluey"
+  params: z.promise( // <-- note the promise here, for next.js 15+
+    z.object({
+      name: z.string()
     })
-  }
-)
-```
-
-## Typed request bodies
-
-Similarly, you can use `zod` to parse request bodies:
-
-```ts
-import { NextResponse } from "next"
-import { z } from "zod"
-
-type ResponseData = {
-  name: string
-}
-
-const bodySchema = z.object({
-  username: z.string()
+  )
 })
 
-export const PUT = handler<ResponseData>((req, context) => {
-  const body = bodySchema.parse(await req.json())
+export const GET: Handler<ResponseData, z.infer<typeof contextSchema>> = async (req, context) => {
+  const { name } = await context.params // <-- this will still be type-safe
 
-  // If the body does not satisfy `bodySchema`, the route handler will catch
-  // the error and return a 400 error with the error details.
+  // or you can parse the schema:
+  const { params } = contextSchema.parse(context)
+  const { name } = await params
+
 
   return NextResponse.json({
-    name: body.username
+    name
+  })
+}
+```
+
+## Wrapper function
+
+In addition to providing these types, the library also provides a convenience wrapper function `handler` which simply applies the Handler type to the function. Since this is a no-op, it is recommended to use the `Handler` type directly.
+
+NOTE: If you use this method, you should install this package as a `dependency`
+
+```ts
+import { handler } from "typed-route-handler"
+import { NextResponse } from 'next/server'
+
+type ResponseBody = {
+  balance: number
+}
+
+export const GET = handler<ResponseBody>(async (req) => {
+  return NextResponse.json({
+    balance: 9_000
   })
 })
 ```
 
-## Usage with modified `req`s (e.g. next-auth)
+### Usage with modified `req`s (e.g. next-auth)
 
-When using this library with next-auth or other libraries which modify the `req` objects, you can pass a 3rd type to the `handler` call. You may also need to place `handler` within the other middleware because the other handlers may mask the return types, disabling the type-checking from `typed-route-handler` For example:
+When using this library with `next-auth` or other libraries which modify the `req` objects, you can pass a 3rd type to the `handler` call, representing modified Request object type. For example:
 
 ```ts
 import { auth } from '@/auth'
 import { type NextAuthRequest } from 'next-auth'
-import { handler, type type NextRouteContext, unauthorized } from 'typed-route-handler'
+import { handler, type type NextRouteContext } from 'typed-route-handler'
 
 export const GET = auth(
   handler<ResponseBody, NextRouteContext, NextAuthRequest>((req, ctx) => {

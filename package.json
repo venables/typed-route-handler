@@ -1,6 +1,6 @@
 {
   "name": "typed-route-handler",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Type-safe route handlers for Next.js",
   "keywords": ["next", "route handler", "typescript", "api"],
   "homepage": "https://github.com/venables/typed-route-handler#readme",
