@@ -48,8 +48,7 @@ Typed handler is easy to use: In the simplest case, just add the type `Handler` 
 - export const GET = async (req: NextRequest) => {
 + export const GET: Handler = async (req) => {
     // ...
-- }
-+ }
+  }
 ```
 
 ## Typed Responses
