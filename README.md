@@ -36,7 +36,7 @@ export const GET: Handler<ResponseData> = async (req) => {
 npm i -D typed-route-handler
 ```
 
-This library can be installed as a devDependency when only used for types. If you'd like to use the [wrapper](#wrapper) function, you can install it as a regular dependency.
+This library can be installed as a devDependency when only used for types. If you'd like to use the [wrapper](#wrapper-function) function, you can install it as a regular dependency.
 
 ## Usage
 
