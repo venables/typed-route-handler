@@ -2,41 +2,115 @@
   "name": "typed-route-handler",
   "version": "1.1.0",
   "description": "Type-safe route handlers for Next.js",
-  "keywords": ["next", "route handler", "typescript", "api"],
+  "type": "module",
+  "keywords": [
+    "next",
+    "route handler",
+    "typescript",
+    "api"
+  ],
   "homepage": "https://github.com/venables/typed-route-handler#readme",
   "bugs": {
     "url": "https://github.com/venables/typed-route-handler/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/venables/typed-route-handler.git"
+    "url": "git+https://github.com/venables/typed-route-handler.git"
   },
   "license": "MIT",
   "author": "Matt Venables <matt@venabl.es>",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist/**/*"],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./valibot": {
+      "import": {
+        "types": "./dist/parsers/valibot.d.ts",
+        "default": "./dist/parsers/valibot.js"
+      },
+      "require": {
+        "types": "./dist/parsers/valibot.d.cts",
+        "default": "./dist/parsers/valibot.cjs"
+      }
+    },
+    "./zod": {
+      "import": {
+        "types": "./dist/parsers/zod/v4.d.ts",
+        "default": "./dist/parsers/zod/v4.js"
+      },
+      "require": {
+        "types": "./dist/parsers/zod/v4.d.cts",
+        "default": "./dist/parsers/zod/v4.cjs"
+      }
+    },
+    "./zod/v3": {
+      "import": {
+        "types": "./dist/parsers/zod/v3.d.ts",
+        "default": "./dist/parsers/zod/v3.js"
+      },
+      "require": {
+        "types": "./dist/parsers/zod/v3.d.cts",
+        "default": "./dist/parsers/zod/v3.cjs"
+      }
+    },
+    "./zod/v4": {
+      "import": {
+        "types": "./dist/parsers/zod/v4.d.ts",
+        "default": "./dist/parsers/zod/v4.js"
+      },
+      "require": {
+        "types": "./dist/parsers/zod/v4.d.cts",
+        "default": "./dist/parsers/zod/v4.cjs"
+      }
+    }
+  },
   "scripts": {
-    "build": "tsup",
-    "check": "biome check . && bun run typecheck && bun test",
+    "build": "tsdown",
+    "check": "biome check . && bun run typecheck && bun test --coverage",
     "clean": "git clean -xdf dist client",
+    "fix": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
+    "nuke": "bun clean && rm -rf node_modules",
     "outdated": "npx npm-check-updates --interactive --format group",
     "prepublish": "bun run build",
     "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {},
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/bun": "^1.1.14",
-    "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "@biomejs/biome": "2.0.5",
+    "@types/bun": "^1.2.17",
+    "publint": "^0.3.12",
+    "tsdown": "^0.12.9",
+    "typescript": "^5",
+    "valibot": "^1.0.0",
+    "zod": "^3.25.0"
   },
   "peerDependencies": {
-    "next": ">= 15"
+    "next": ">= 15",
+    "valibot": "^1.0.0",
+    "zod": "^3.25.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    },
+    "valibot": {
+      "optional": true
+    }
   }
 }

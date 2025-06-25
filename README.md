@@ -5,6 +5,7 @@
 </div>
 
 ```ts
+import { NextResponse } from "next/server"
 import type { Handler } from 'typed-route-handler'
 
 type ResponseData = {
@@ -20,27 +21,25 @@ export const GET: Handler<ResponseData> = async (req) => {
 }
 ```
 
-> [!NOTE]
-> This library is designed for **Next.js 15 and higher**. To use this library with Next.js 14 or earlier, use typed-route-handler version `0.3.0`.
-
 ## Features
 
 - ✅ **Type-safe** route handler responses
 - ✅ **Type-safe** route handler parameters
-- ✅ Full **zod compatibility**
+- ✅ Full **zod (v3 and v4) and valibot compatibility**
 - ✅ Production ready
 
 ## Installation
 
 ```sh
-npm i -D typed-route-handler
+npm i typed-route-handler
 ```
 
-This library can be installed as a devDependency when only used for types. If you'd like to use the [wrapper](#wrapper-function) function, you can install it as a regular dependency.
+> [!NOTE]
+> This library may be installed as a devDependency when only used for types. If you'd like to use the [param parsers](#param-parsers) or the [route handler wrapper](#wrapper-function) function, you can install it as a regular dependency.
 
 ## Usage
 
-Typed handler is easy to use: In the simplest case, just add the type `Handler` to your route handler and you're good to go!
+The typed handler is easy to use: In the simplest case, just add the type `Handler` to your route handler and it will automatically assign types.
 
 ```diff
 + import type { Handler } from 'typed-route-handler'
@@ -56,7 +55,7 @@ Typed handler is easy to use: In the simplest case, just add the type `Handler` 
 The real magic comes when you add typing to your responses.
 
 ```ts
-import { NextResponse } from "next"
+import { NextResponse } from "next/server"
 import type { Handler } from 'typed-route-handler'
 
 type ResponseData = {
@@ -74,56 +73,23 @@ export const GET: Handler<ResponseData> = (req) => {
 
 ## Typed Parameters
 
-We can also add type verification to our parameters. Each parameter `Context` extends from `NextRouteContext`.  
+We can also add type verification to our parameters:
 
 ```ts
 // app/api/[name]/route.ts
 import { NextResponse } from "next/server"
-import { type Handler, type NextRouteContext } from "typed-route-handler"
-
-type ResponseData = {
-  name: string
-}
-
-type Context = NextRouteContext<{
-  name: string
-}>
-
-export const GET: Handler<ResponseData, Context> = async (req, context) => {
-  const { name } = await context.params // <-- this will be type-safe
-
-  return NextResponse.json({
-    name
-  })
-}
-```
-
-Note that this does not perform any runtime type-checking. To do that, you can use the zod types:
-
-```ts
-import { NextResponse } from "next/server"
-import { z } from "zod"
 import { type Handler } from "typed-route-handler"
 
 type ResponseData = {
   name: string
 }
 
-const contextSchema = z.object({
-  params: z.promise( // <-- note the promise here, for next.js 15+
-    z.object({
-      name: z.string()
-    })
-  )
-})
+type Params = {
+  name: string
+}
 
-export const GET: Handler<ResponseData, z.infer<typeof contextSchema>> = async (req, context) => {
-  const { name } = await context.params // <-- this will still be type-safe
-
-  // or you can parse the schema:
-  const { params } = contextSchema.parse(context)
-  const { name } = await params
-
+export const GET: Handler<ResponseData, Params> = async (req, { params }) => {
+  const { name } = await params // <-- this will mark `name` as a string
 
   return NextResponse.json({
     name
@@ -131,11 +97,49 @@ export const GET: Handler<ResponseData, z.infer<typeof contextSchema>> = async (
 }
 ```
 
+## Param Parsers
+
+Adding compile-time param checking is nice, but it does not perform any runtime type-checking which is more important for parameters.  To do that, you can use the included zod (v3 and v4) or valibot `parseParams` method:
+
+```ts
+import { NextResponse } from "next/server"
+import { parseParams } from 'typed-route-handler/zod'
+import * as z from 'zod/v4'
+import { type Handler } from "typed-route-handler"
+
+type ResponseData = {
+  id: number
+  url: string
+}
+
+const paramsSchema = z.object({
+  id: z.coerce.number(),
+  url: z.string().url()
+})
+
+export const GET: Handler<ResponseData> = async (req, ctx) => {
+  const { id, url } = await parseParams(ctx, paramsSchema)
+
+  return NextResponse.json({
+    id, // a number, coerced from a string
+    url // a url
+  })
+}
+```
+
+You can also use the `safeParseParams` method to prevent throwing exceptions if the params are not valid.
+
+For different schema validators you can use the following imports:
+
+| Library   | Import Path                                                  |
+|-----------|--------------------------------------------------------------|
+| zod v4    | `import { parseParams } from 'typed-route-handler/zod'`     |
+| zod v3    | `import { parseParams } from 'typed-route-handler/zod/v3'`  |
+| valibot   | `import { parseParams } from 'typed-route-handler/valibot'` |
+
 ## Wrapper function
 
-In addition to providing these types, the library also provides a convenience wrapper function `handler` which simply applies the Handler type to the function. Since this is a no-op, it is recommended to use the `Handler` type directly.
-
-NOTE: If you use this method, you should install this package as a `dependency`
+In addition, the library also provides a convenience wrapper function `handler` which simply applies the Handler type to the function. Since this is a no-op, it is recommended to use the `Handler` type directly.
 
 ```ts
 import { handler } from "typed-route-handler"
@@ -159,10 +163,12 @@ When using this library with `next-auth` or other libraries which modify the `re
 ```ts
 import { auth } from '@/auth'
 import { type NextAuthRequest } from 'next-auth'
-import { handler, type type NextRouteContext } from 'typed-route-handler'
+import { handler } from 'typed-route-handler'
+
+type Params = { id: string }
 
 export const GET = auth(
-  handler<ResponseBody, NextRouteContext, NextAuthRequest>((req, ctx) => {
+  handler<ResponseBody, Params, NextAuthRequest>((req, ctx) => {
     if (!req.auth?.user) {
       unauthorized()
     }
@@ -172,11 +178,12 @@ export const GET = auth(
 )
 ```
 
+
 ## 🏰 Production Ready
 
-Already widely used in high-traffic production apps in [songbpm](https://songbpm.com), [jog.fm](https://jog.fm), [usdc.cool](https://usdc.cool), as well as all [StartKit](https://github.com/startkit-dev/next) projects.
+Already widely used in high-traffic production apps at [Catena Labs](https://catenalabs.com), [songbpm](https://songbpm.com), [jog.fm](https://jog.fm), [usdc.cool](https://usdc.cool), as well as all [StartKit](https://github.com/startkit-dev) next.js projects.
 
-## ❤️ Open Source
+## Open Source
 
 This project is MIT-licensed and is free to use and modify for your own projects.
 
