@@ -1,16 +1,16 @@
 import { describe, expect, it } from "bun:test"
 import { NextRequest, NextResponse } from "next/server.js"
-import { handler } from "./handler"
-import * as z from "zod/v4"
 import * as v from "valibot"
-import {
-  parseParams as parseParamsZod,
-  safeParseParams as safeParseParamsZod
-} from "./parsers/zod/v4"
+import * as z from "zod/v4"
+import { handler } from "./handler"
 import {
   parseParams as parseParamsValibot,
   safeParseParams as safeParseParamsValibot
 } from "./parsers/valibot"
+import {
+  parseParams as parseParamsZod,
+  safeParseParams as safeParseParamsZod
+} from "./parsers/zod/v4"
 
 const createMockRequest = (url = "http://localhost:3000/api/test") => {
   return new NextRequest(url)

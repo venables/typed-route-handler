@@ -23,7 +23,13 @@
       }
     }
   },
-  "assist": { "actions": { "source": { "organizeImports": "off" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",

@@ -1,5 +1,5 @@
-import type { NextRouteContext } from "../../next-types"
 import type { z } from "zod/v3"
+import type { NextRouteContext } from "../../next-types"
 
 /**
  * Parses route parameters using a Zod v3 schema with strict validation.

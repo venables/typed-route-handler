@@ -1,5 +1,5 @@
-import type { NextRouteContext } from "../next-types"
 import * as v from "valibot"
+import type { NextRouteContext } from "../next-types"
 
 /**
  * Parses route parameters using a Valibot schema with strict validation.
