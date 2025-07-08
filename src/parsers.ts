@@ -1,19 +1,19 @@
-import * as v from "valibot"
-import type { NextRouteContext } from "../next-types"
+import * as s from "standard-parse"
+import type { NextRouteContext } from "./next-types"
 
 /**
- * Parses route parameters using a Valibot schema with strict validation.
+ * Parses route parameters using a standard schema
  * Throws an error if validation fails.
  *
  * @param ctx - The Next.js route context containing the params
- * @param paramsSchema - The Valibot schema to validate against
+ * @param paramsSchema - The standard schema to validate against
  * @returns A promise resolving to the parsed and validated parameters
  * @throws Will throw if validation fails
  *
  * @example
  * ```typescript
  * import * as v from "valibot"
- * import { parseParams } from "typed-route-handler/valibot"
+ * import { parseParams } from "typed-route-handler"
  *
  * const schema = v.object({
  *   id: v.pipe(v.string(), v.uuid()),
@@ -27,25 +27,25 @@ import type { NextRouteContext } from "../next-types"
  * }
  * ```
  */
-export async function parseParams<T extends v.GenericSchema>(
+export async function parseParams<T extends s.Schema>(
   ctx: NextRouteContext,
   paramsSchema: T
-): Promise<v.InferOutput<T>> {
-  return v.parse(paramsSchema, await ctx.params)
+): Promise<s.Output<T>> {
+  return s.parse(paramsSchema, await ctx.params)
 }
 
 /**
- * Safely parses route parameters using a Valibot schema without throwing errors.
+ * Safely parses route parameters using a standard schema without throwing errors.
  * Returns a result object with success/failure information.
  *
  * @param ctx - The Next.js route context containing the params
- * @param paramsSchema - The Valibot schema to validate against
+ * @param paramsSchema - The standard schema to validate against
  * @returns A promise resolving to a SafeParseResult with success/failure status
  *
  * @example
  * ```typescript
  * import * as v from "valibot"
- * import { safeParseParams } from "typed-route-handler/valibot"
+ * import { safeParseParams } from "typed-route-handler"
  *
  * const schema = v.object({
  *   id: v.pipe(v.string(), v.uuid()),
@@ -63,9 +63,9 @@ export async function parseParams<T extends v.GenericSchema>(
  * }
  * ```
  */
-export async function safeParseParams<T extends v.GenericSchema>(
+export async function safeParseParams<T extends s.Schema>(
   ctx: NextRouteContext,
   paramsSchema: T
-) {
-  return v.safeParse(paramsSchema, await ctx.params)
+): Promise<s.Result<T>> {
+  return s.safeParse(paramsSchema, await ctx.params)
 }

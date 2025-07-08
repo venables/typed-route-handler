@@ -35,46 +35,6 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
-    },
-    "./valibot": {
-      "import": {
-        "types": "./dist/parsers/valibot.d.ts",
-        "default": "./dist/parsers/valibot.js"
-      },
-      "require": {
-        "types": "./dist/parsers/valibot.d.cts",
-        "default": "./dist/parsers/valibot.cjs"
-      }
-    },
-    "./zod": {
-      "import": {
-        "types": "./dist/parsers/zod/v4.d.ts",
-        "default": "./dist/parsers/zod/v4.js"
-      },
-      "require": {
-        "types": "./dist/parsers/zod/v4.d.cts",
-        "default": "./dist/parsers/zod/v4.cjs"
-      }
-    },
-    "./zod/v3": {
-      "import": {
-        "types": "./dist/parsers/zod/v3.d.ts",
-        "default": "./dist/parsers/zod/v3.js"
-      },
-      "require": {
-        "types": "./dist/parsers/zod/v3.d.cts",
-        "default": "./dist/parsers/zod/v3.cjs"
-      }
-    },
-    "./zod/v4": {
-      "import": {
-        "types": "./dist/parsers/zod/v4.d.ts",
-        "default": "./dist/parsers/zod/v4.js"
-      },
-      "require": {
-        "types": "./dist/parsers/zod/v4.d.cts",
-        "default": "./dist/parsers/zod/v4.cjs"
-      }
     }
   },
   "scripts": {
@@ -90,7 +50,9 @@
     "prepublish": "bun run build",
     "typecheck": "tsc --noEmit --pretty"
   },
-  "dependencies": {},
+  "dependencies": {
+    "standard-parse": "^0.1.0"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",
     "@types/bun": "^1.2.17",

@@ -3,14 +3,7 @@ import { NextRequest, NextResponse } from "next/server.js"
 import * as v from "valibot"
 import * as z from "zod/v4"
 import { handler } from "./handler"
-import {
-  parseParams as parseParamsValibot,
-  safeParseParams as safeParseParamsValibot
-} from "./parsers/valibot"
-import {
-  parseParams as parseParamsZod,
-  safeParseParams as safeParseParamsZod
-} from "./parsers/zod/v4"
+import { parseParams, safeParseParams } from "./parsers"
 
 const createMockRequest = (url = "http://localhost:3000/api/test") => {
   return new NextRequest(url)
@@ -22,7 +15,7 @@ const createMockContext = <T>(params: T) => ({
 
 describe("typed-route-handler integration", () => {
   describe("complete Next.js route examples", () => {
-    it("simulates a user profile API route with Zod validation", async () => {
+    it("simulates a user profile API route with Zod schema validation", async () => {
       type User = {
         id: number
         name: string
@@ -36,7 +29,7 @@ describe("typed-route-handler integration", () => {
       })
 
       const GET = handler<User>(async (_req, context) => {
-        const { userId, format } = await parseParamsZod(context, paramsSchema)
+        const { userId, format } = await parseParams(context, paramsSchema)
 
         // Simulate fetching user data
         const user: User = {
@@ -70,7 +63,7 @@ describe("typed-route-handler integration", () => {
       })
     })
 
-    it("simulates a blog post API route with Valibot validation", async () => {
+    it("simulates a blog post API route with Valibot schema validation", async () => {
       type BlogPost = {
         slug: string
         title: string
@@ -91,10 +84,7 @@ describe("typed-route-handler integration", () => {
       })
 
       const GET = handler<BlogPost>(async (_req, context) => {
-        const { slug, draft = false } = await parseParamsValibot(
-          context,
-          paramsSchema
-        )
+        const { slug, draft = false } = await parseParams(context, paramsSchema)
 
         // Simulate fetching blog post
         const post: BlogPost = {
@@ -143,7 +133,7 @@ describe("typed-route-handler integration", () => {
       })
 
       const POST = handler<CreateResponse>(async (req, context) => {
-        const { categoryId } = await parseParamsZod(context, paramsSchema)
+        const { categoryId } = await parseParams(context, paramsSchema)
         const rawBody = await req.json()
         const body = bodySchema.parse(rawBody)
 
@@ -190,8 +180,8 @@ describe("typed-route-handler integration", () => {
         | { ok: true; data: { id: string; page: number } }
         | { ok: false; error: string }
       >(async (_req, context) => {
-        const result = await safeParseParamsZod(context, paramsSchema)
-        if (!result.success) {
+        const result = await safeParseParams(context, paramsSchema)
+        if (result.issues) {
           return NextResponse.json(
             {
               ok: false,
@@ -201,7 +191,7 @@ describe("typed-route-handler integration", () => {
           )
         }
 
-        return NextResponse.json({ ok: true, data: result.data })
+        return NextResponse.json({ ok: true, data: result.value })
       })
 
       const request = createMockRequest()
@@ -227,13 +217,15 @@ describe("typed-route-handler integration", () => {
           }
         | { message: string; email: string; age: number }
       >(async (_req, context) => {
-        const result = await safeParseParamsValibot(context, paramsSchema)
-        if (!result.success) {
+        const result = await safeParseParams(context, paramsSchema)
+        if (result.issues) {
           return NextResponse.json(
             {
               error: "Validation failed",
-              issues: result.issues?.map((issue) => ({
-                path: issue.path?.map((p) => p.key).join("."),
+              issues: result.issues.map((issue) => ({
+                path: issue.path
+                  ?.map((p) => (typeof p === "object" ? p.key : p))
+                  .join("."),
                 message: issue.message
               }))
             },
@@ -243,8 +235,8 @@ describe("typed-route-handler integration", () => {
 
         return NextResponse.json({
           message: "Valid data",
-          email: result.output.email,
-          age: result.output.age
+          email: result.value.email,
+          age: result.value.age
         })
       })
 
@@ -283,7 +275,7 @@ describe("typed-route-handler integration", () => {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
           }
 
-          const { userId } = await parseParamsZod(context, paramsSchema)
+          const { userId } = await parseParams(context, paramsSchema)
 
           return NextResponse.json({
             userId,
@@ -341,8 +333,10 @@ describe("typed-route-handler integration", () => {
       })
 
       const GET = handler<ProductSearchResponse>(async (_req, context) => {
-        const { categories, minPrice, maxPrice, inStock } =
-          await parseParamsZod(context, paramsSchema)
+        const { categories, minPrice, maxPrice, inStock } = await parseParams(
+          context,
+          paramsSchema
+        )
 
         const filters: ProductFilter = {
           categoryIds: categories,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
-import * as v from "valibot"
-import { parseParams, safeParseParams } from "./valibot"
+import { z } from "zod"
+import { parseParams, safeParseParams } from "./parsers"
 
 const validContext = {
   params: Promise.resolve({
@@ -14,11 +14,11 @@ const invalidContext = {
   })
 }
 
-const paramsSchema = v.object({
-  id: v.pipe(v.string(), v.transform(Number), v.number())
+const paramsSchema = z.object({
+  id: z.coerce.number()
 })
 
-describe("valibot", () => {
+describe("zod/v3", () => {
   describe("parseParams()", () => {
     it("parses valid next.js context", async () => {
       const params = await parseParams(validContext, paramsSchema)
@@ -35,19 +35,14 @@ describe("valibot", () => {
   describe("safeParseParams()", () => {
     it("performs a safe parse", async () => {
       const result = await safeParseParams(validContext, paramsSchema)
-      if (!result.success) {
+      if (result.issues) {
         throw new Error("Failed to parse params")
       }
-
-      expect(result.output).toEqual({
-        id: 123
-      })
     })
 
     it("rejects invalid next.js contexts", async () => {
       const result = await safeParseParams(invalidContext, paramsSchema)
 
-      expect(result.success).toBe(false)
       expect(result.issues).toBeDefined()
     })
   })

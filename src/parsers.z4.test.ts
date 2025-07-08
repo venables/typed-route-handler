@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import * as z from "zod/v4"
-import { parseParams, safeParseParams } from "./v4"
+import { parseParams, safeParseParams } from "./parsers"
 
 const validContext = {
   params: Promise.resolve({
@@ -36,7 +36,7 @@ describe("zod/v4", () => {
   describe("safeParseParams()", () => {
     it("performs a safe parse", async () => {
       const result = await safeParseParams(validContext, paramsSchema)
-      if (!result.success) {
+      if (result.issues) {
         throw new Error("Failed to parse params")
       }
     })
@@ -44,8 +44,7 @@ describe("zod/v4", () => {
     it("rejects invalid next.js contexts", async () => {
       const result = await safeParseParams(invalidContext, paramsSchema)
 
-      expect(result.success).toBe(false)
-      expect(result.error).toBeDefined()
+      expect(result.issues).toBeDefined()
     })
   })
 })
