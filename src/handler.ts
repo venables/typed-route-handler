@@ -22,7 +22,7 @@ import type { NextRouteContext, NextRouteParams } from "./next-types"
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
  */
 export type Handler<
-  TResponse = void,
+  TResponse = unknown,
   TParams = NextRouteParams,
   TRequest extends Request = NextRequest
 > = (

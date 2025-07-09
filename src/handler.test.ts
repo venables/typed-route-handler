@@ -12,6 +12,20 @@ const createMockContext = <T>(params: T) => ({
 })
 
 describe("Handler type", () => {
+  it("allows usage without a response type", async () => {
+    const GET: Handler = async () => {
+      return NextResponse.json({ message: "Hello World" })
+    }
+
+    const request = createMockRequest()
+    const context = createMockContext({})
+
+    const response = await GET(request, context)
+    const data = await response.json()
+
+    expect(data).toEqual({ message: "Hello World" })
+  })
+
   it("works with basic GET handler", async () => {
     type ResponseData = { message: string }
 
