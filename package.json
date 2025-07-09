@@ -1,6 +1,6 @@
 {
   "name": "typed-route-handler",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Type-safe route handlers for Next.js",
   "type": "module",
   "keywords": [
@@ -61,18 +61,5 @@
     "typescript": "^5",
     "valibot": "^1.0.0",
     "zod": "^3.25.0"
-  },
-  "peerDependencies": {
-    "next": ">= 15",
-    "valibot": "^1.0.0",
-    "zod": "^3.25.0"
-  },
-  "peerDependenciesMeta": {
-    "zod": {
-      "optional": true
-    },
-    "valibot": {
-      "optional": true
-    }
   }
 }
