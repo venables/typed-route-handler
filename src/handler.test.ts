@@ -1,6 +1,6 @@
+import type { Handler } from "./handler"
 import { describe, expect, it } from "bun:test"
 import { NextRequest, NextResponse } from "next/server.js"
-import type { Handler } from "./handler"
 import { handler } from "./handler"
 
 const createMockRequest = (url = "http://localhost:3000/api/test") => {
@@ -14,7 +14,7 @@ const createMockContext = <T>(params: T) => ({
 describe("Handler type", () => {
   it("allows usage without a response type", async () => {
     const GET: Handler = async () => {
-      return NextResponse.json({ message: "Hello World" })
+      return Promise.resolve(NextResponse.json({ message: "Hello World" }))
     }
 
     const request = createMockRequest()
@@ -27,10 +27,12 @@ describe("Handler type", () => {
   })
 
   it("works with basic GET handler", async () => {
-    type ResponseData = { message: string }
+    interface ResponseData {
+      message: string
+    }
 
-    const GET: Handler<ResponseData> = async () => {
-      return NextResponse.json({ message: "Hello World" })
+    const GET: Handler<ResponseData> = () => {
+      return Promise.resolve(NextResponse.json({ message: "Hello World" }))
     }
 
     const request = createMockRequest()
@@ -43,8 +45,14 @@ describe("Handler type", () => {
   })
 
   it("works with typed params", async () => {
-    type ResponseData = { userId: string; name: string }
-    type Params = { userId: string; name: string }
+    interface ResponseData {
+      userId: string
+      name: string
+    }
+    interface Params {
+      userId: string
+      name: string
+    }
 
     const GET: Handler<ResponseData, Params> = async (_req, { params }) => {
       const { userId, name } = await params
@@ -61,7 +69,10 @@ describe("Handler type", () => {
   })
 
   it("handles POST requests with request body", async () => {
-    type ResponseData = { created: boolean; data: unknown }
+    interface ResponseData {
+      created: boolean
+      data: unknown
+    }
 
     const POST: Handler<ResponseData> = async (req) => {
       const body = await req.json()
@@ -101,8 +112,12 @@ describe("Handler type", () => {
 
 describe("handler wrapper function", () => {
   it("wraps a handler function correctly", async () => {
-    type ResponseData = { success: boolean }
-    type Params = { id: string }
+    interface ResponseData {
+      success: boolean
+    }
+    interface Params {
+      id: string
+    }
 
     const wrappedHandler = handler<ResponseData, Params>(
       async (_req, { params }) => {
@@ -121,8 +136,13 @@ describe("handler wrapper function", () => {
   })
 
   it("maintains type safety", async () => {
-    type User = { id: string; email: string }
-    type Params = { userId: string }
+    interface User {
+      id: string
+      email: string
+    }
+    interface Params {
+      userId: string
+    }
 
     const getUserHandler = handler<User, Params>(async (_req, { params }) => {
       const { userId } = await params
@@ -145,8 +165,12 @@ describe("handler wrapper function", () => {
   })
 
   it("works with error responses", async () => {
-    type ErrorResponse = { error: string }
-    type Params = { id: string }
+    interface ErrorResponse {
+      error: string
+    }
+    interface Params {
+      id: string
+    }
 
     const errorHandler = handler<ErrorResponse, Params>(
       async (_req, { params }) => {

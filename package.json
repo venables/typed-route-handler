@@ -2,7 +2,6 @@
   "name": "typed-route-handler",
   "version": "3.0.2",
   "description": "Type-safe route handlers for Next.js",
-  "type": "module",
   "keywords": [
     "next",
     "route handler",
@@ -19,12 +18,7 @@
   },
   "license": "MIT",
   "author": "Matt Venables <matt@venabl.es>",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "type": "module",
   "exports": {
     ".": {
       "import": {
@@ -37,29 +31,48 @@
       }
     }
   },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown",
-    "check": "biome check . && bun run typecheck && bun test --coverage",
-    "clean": "git clean -xdf dist client",
-    "fix": "biome check --write .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "lint": "biome lint .",
+    "check": "bun run format:check && bun run lint && bun run typecheck && bun test --coverage",
+    "clean": "git clean -xdf dist node_modules/.cache",
+    "fix": "bun run format && bun run lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "nuke": "bun clean && rm -rf node_modules",
     "outdated": "npx npm-check-updates --interactive --format group",
     "prepublishOnly": "bun run build",
+    "publint": "npx publint@latest",
     "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "standard-parse": "^0.1.0"
+    "standard-parse": "^0.3.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.5",
-    "@types/bun": "^1.2.17",
-    "publint": "^0.3.12",
-    "tsdown": "^0.12.9",
+    "@eslint/js": "^9.31.0",
+    "@prettier/plugin-oxc": "^0.0.4",
+    "@types/bun": "^1.2.19",
+    "eslint": "^9.31.0",
+    "eslint-config-flat-gitignore": "^2.1.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-packagejson": "^2.5.18",
+    "tsdown": "^0.13.0",
     "typescript": "^5",
-    "valibot": "^1.0.0",
-    "zod": "^3.25.0"
+    "typescript-eslint": "^8.37.0",
+    "valibot": "^1.1.0",
+    "zod": "^4.0.13"
+  },
+  "peerDependencies": {
+    "next": ">= 15"
   }
 }

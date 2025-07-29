@@ -1,5 +1,5 @@
-import * as s from "standard-parse"
 import type { NextRouteContext } from "./next-types"
+import * as s from "standard-parse"
 
 /**
  * Parses route parameters using a standard schema
@@ -66,6 +66,6 @@ export async function parseParams<T extends s.Schema>(
 export async function safeParseParams<T extends s.Schema>(
   ctx: NextRouteContext,
   paramsSchema: T
-): Promise<s.Result<T>> {
+): Promise<s.Result<s.Output<T>>> {
   return s.safeParse(paramsSchema, await ctx.params)
 }

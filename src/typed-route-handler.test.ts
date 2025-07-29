@@ -16,7 +16,7 @@ const createMockContext = <T>(params: T) => ({
 describe("typed-route-handler integration", () => {
   describe("complete Next.js route examples", () => {
     it("simulates a user profile API route with Zod schema validation", async () => {
-      type User = {
+      interface User {
         id: number
         name: string
         email: string
@@ -64,7 +64,7 @@ describe("typed-route-handler integration", () => {
     })
 
     it("simulates a blog post API route with Valibot schema validation", async () => {
-      type BlogPost = {
+      interface BlogPost {
         slug: string
         title: string
         content: string
@@ -117,7 +117,7 @@ describe("typed-route-handler integration", () => {
     })
 
     it("simulates a CRUD API with POST and validation", async () => {
-      type CreateResponse = {
+      interface CreateResponse {
         id: string
         title: string
         categoryId: number
@@ -253,11 +253,11 @@ describe("typed-route-handler integration", () => {
     })
 
     it("demonstrates route protection with authentication", async () => {
-      type UserProfile = {
+      interface UserProfile {
         profile: string
       }
 
-      type AuthenticatedResponse = {
+      interface AuthenticatedResponse {
         userId: number
         data: UserProfile
         authenticated: true
@@ -313,14 +313,14 @@ describe("typed-route-handler integration", () => {
 
   describe("advanced type scenarios", () => {
     it("works with complex nested types and transformations", async () => {
-      type ProductFilter = {
+      interface ProductFilter {
         categoryIds: number[]
         priceRange: { min: number; max: number }
         inStock: boolean
       }
 
-      type ProductSearchResponse = {
-        products: Array<{ id: number; name: string; price: number }>
+      interface ProductSearchResponse {
+        products: { id: number; name: string; price: number }[]
         filters: ProductFilter
         total: number
       }

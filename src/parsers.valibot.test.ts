@@ -27,7 +27,7 @@ describe("valibot", () => {
       })
     })
 
-    it("rejects invalid next.js contexts", async () => {
+    it("rejects invalid next.js contexts", () => {
       expect(parseParams(invalidContext, paramsSchema)).rejects.toThrow()
     })
   })

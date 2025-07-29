@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import { z } from "zod"
+import { z } from "zod/v3"
 import { parseParams, safeParseParams } from "./parsers"
 
 const validContext = {
@@ -27,7 +27,7 @@ describe("zod/v3", () => {
       })
     })
 
-    it("rejects invalid next.js contexts", async () => {
+    it("rejects invalid next.js contexts", () => {
       expect(parseParams(invalidContext, paramsSchema)).rejects.toThrow()
     })
   })

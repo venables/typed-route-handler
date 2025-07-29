@@ -1,5 +1,5 @@
-import type { NextRequest, NextResponse } from "next/server.js"
 import type { NextRouteContext, NextRouteParams } from "./next-types"
+import type { NextRequest, NextResponse } from "next/server.js"
 
 /**
  * A typed Route Handler
